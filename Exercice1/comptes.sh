@@ -1,11 +1,29 @@
 #!/bin/bash
-echo "Nombre de Location en 2016:"
-cat ann/2016/* | grep Location | wc -l
 
-echo "Nombre de Location en 2017:"
-cat ann/2017/* | grep Location | wc -l
+if [ $# -ne 0 ]; then
+    echo "Usage: $0"
+    echo "Ce script ne prend aucun argument."
+    exit 1
+fi
 
-echo "Nombre de Location en 2018:"
-cat ann/2018/* | grep Location | wc -l
+
+if [ ! -d "ann" ]; then
+    echo "Erreur : le dossier 'ann' est introuvable."
+    exit 1
+fi
+
+for year in 2016 2017 2018
+do
+    
+    if [ ! -d "ann/$year" ]; then
+        echo "Erreur : le dossier ann/$year est introuvable."
+        exit 1
+    fi
+
+    
+    echo "Nombre de Location en $year:"
+    cat ann/$year/* | grep Location | wc -l
+done
+
 
 
