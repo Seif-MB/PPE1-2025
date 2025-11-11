@@ -1,45 +1,81 @@
 #!/bin/bash
 
 
-
-if [ -z "$1" ]; then
-  echo "Erreur : vous devez donner un fichier en argument."
-  echo "Usage : ./miniprojet.sh urls/fr.txt"
+if [ $# -ne 2 ]; then
+  echo "Erreur : ce programme demande deux arguments :"
+  echo "Usage : ./miniprojet.sh <fichier_urls> <fichier_sortie>"
   exit 1
 fi
 
-if [ ! -f "$1" ]; then
-  echo "Erreur : le fichier '$1' n'existe pas."
+
+FICHIER_URLS=$1
+FICHIER_SORTIE=$2
+
+
+if [ ! -f "$FICHIER_URLS" ]; then
+  echo "Erreur : le fichier '$FICHIER_URLS' n'existe pas."
   exit 1
 fi
 
-#  Lecture du fichier et traitement de chaque URL
-n=1
-while read -r line; do
-  # ignorer les lignes vides
-  if [ -z "$line" ]; then
+
+DOSSIER_SORTIE=$(dirname "$FICHIER_SORTIE")
+mkdir -p "$DOSSIER_SORTIE"
+
+
+echo "<html>" > "$FICHIER_SORTIE"
+echo "  <head><meta charset=\"UTF-8\"/><title>Tableau des résultats</title></head>" >> "$FICHIER_SORTIE"
+echo "  <body>" >> "$FICHIER_SORTIE"
+echo "    <h1>Tableau des résultats</h1>" >> "$FICHIER_SORTIE"
+echo "    <table border=\"1\">" >> "$FICHIER_SORTIE"
+echo "      <tr><th>Ligne</th><th>URL</th><th>Code HTTP</th><th>Encodage UTF-8 ?</th><th>Nombre de mots</th></tr>" >> "$FICHIER_SORTIE"
+
+
+NB_LIGNE=0
+while read -r URL; do
+  [ -z "$URL" ] && continue  
+
+  # Ajouter https:// si absent
+  if [[ ! "$URL" =~ ^https?:// ]]; then
+    URL="https://$URL"
+  fi
+
+  echo "Analyse de l'URL : $URL"
+
+  
+  CODE_ET_ENCODAGE=$(curl -s -L -i -o "tmp.txt" -w "%{http_code}\n%{content_type}" "$URL")
+  CODE=$(echo "$CODE_ET_ENCODAGE" | head -n 1)
+  ENCODAGE=$(echo "$CODE_ET_ENCODAGE" | grep -E -o "charset=.*")
+
+  if [ "$CODE" -eq 0 ]; then
+    
+    echo "      <tr><td>$(($NB_LIGNE + 1))</td><td>$URL</td><td>ERREUR</td><td>ERREUR</td><td>ERREUR</td></tr>" >> "$FICHIER_SORTIE"
     continue
   fi
 
-  url="$line"
-
-  # --- Récupérer le code HTTP ---
-  # -s : silencieux
-  # -L : suit les redirections
-  # -o /dev/null : on ignore le contenu
-  # -w "%{http_code}" : affiche seulement le code HTTP
-  code=$(curl -s -L -o /dev/null -w "%{http_code}" "$url")
-
-  # Récupérer l’encodage 
-  encoding=$(curl -s -I -L "$url" | grep -i "content-type" | grep -oE "charset=[^[:space:];]*" | cut -d= -f2)
-  if [ -z "$encoding" ]; then
-    encoding="inconnu"
+  
+  if [[ "$ENCODAGE" =~ [Uu][Tt][Ff]-8 ]]; then
+    ENCODAGE_UTF8="OUI"
+  else
+    ENCODAGE_UTF8="NON"
   fi
 
-  # Pour récupérer le nombre de mots 
-  nb_mots=$(curl -s -L "$url" | sed 's/<[^>]*>/ /g' | wc -w)
+  
+  NB_MOTS=$(cat "tmp.txt" | lynx -dump -stdin -nolist | wc -w)
 
-  echo -e "${n}\t${url}\t${code}\t${encoding}\t${nb_mots}"
+  
+  NB_LIGNE=$((NB_LIGNE + 1))
 
-  n=$((n+1))
-done < "$1"
+ 
+  echo "      <tr><td>$NB_LIGNE</td><td>$URL</td><td>$CODE</td><td>$ENCODAGE_UTF8</td><td>$NB_MOTS</td></tr>" >> "$FICHIER_SORTIE"
+
+ 
+  rm -f "tmp.txt"
+
+done < "$FICHIER_URLS"
+
+
+echo "    </table>" >> "$FICHIER_SORTIE"
+echo "  </body>" >> "$FICHIER_SORTIE"
+echo "</html>" >> "$FICHIER_SORTIE"
+
+echo " Fichier HTML créé : $FICHIER_SORTIE"
