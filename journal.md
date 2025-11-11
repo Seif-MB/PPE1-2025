@@ -50,3 +50,19 @@
 ## exit 1
 
 ## Q3:  Afin d'afficher le numéro de laigne à chaque url, il faut ajouter un compteur et l'incrémnter à chaque itération 
+
+
+ 
+ 
+########## la semaine du 6 à 11 novembre:
+
+## Aprés la correction que nous avons faite au cours, je me suis familiarisé avec certains éléments qui me permettent d'eviter certaines erreurs mais aussi de rendre mon code plus fluide t plus flexible 
+## Dans la semaine passée nous avons travailler sur un code qui génère un tableau.tsv et cette semaine nous devons produire un tableau html,malgré  mon premier code fonctionne bien mais j'ai du opter pour
+## certains changements notamment par rapport aux arguments qu'on donne au script, au téléchargement du contenu avec  curl et lynx, le comptage des mots ainsi que l'encodage.
+## Dans le nouveau script et contrairement au premier j'ai du rajouter un autre argument qui est le fichier de sortie afin de donner plus de flexibilité à mon script 
+## par rapport au téléchargement du contenu html avec curl, cette fois ci j'ai utilisé un fichier txt temporaire afin de sauvegarder le contenu 
+##Ensuite on a utilisé la commande suivante : NB_MOTS=$(cat "tmp.txt" | lynx -dump -stdin -nolist | wc -w) afin de lire le contenu brut et éviter les métadonnées qui peuvent poser problèmes dans le comptage.
+## Aprés avoir sauvegardé le contenu html dans le fichier tmp.txt on utilise dump pour afficher le texte brut sans html 
+## stdin qui permet à lynx de lire le contenu depuis l'entrée standard 
+## nolist qui supprime la liste des liens à la fin de la page 
+## Aprés avoir nettoyé le contenu on peut utiliser wc -w pour compter le nombre de mots exacte 
