@@ -66,3 +66,17 @@
 ## stdin qui permet à lynx de lire le contenu depuis l'entrée standard 
 ## nolist qui supprime la liste des liens à la fin de la page 
 ## Aprés avoir nettoyé le contenu on peut utiliser wc -w pour compter le nombre de mots exacte 
+
+
+##### Miniprojet3######
+
+## Dans un premier temps, tout en respectant les consignes je teste mes fichier localement avent faire le push vers le dépot distan, j'ai trouvé cela trés utile car dans le premier fichier index.html (version simple) j'ai oublié le boutton qui mène au tableau avant rectifier l'erreur toujours sur le depot local avant le pusher.
+
+
+## Aprés avoir testé la page avec la version simple de l'index.html sur github, j'ai opté pour la modification de ce dernier tout en se référant à la librairie Bulma que j'ai trouvé trés riche en termes de fonctionalités. Aprés plusieurs tentative d'adaptation ce des différentes fonctionnalités disponibles sur Bulma j'ai fini par avoir une version final de index.html ( j'avoue que j'ai pas réussi à utiliser toutes les propositions de Bulma tellement c'est riche)
+
+## l'étape suivante était la modification de mon script de base "miniprojet.sh" c'est là ou j'ai essayé de garder certaine cohérence entre les classes utilisées en index.html et dans le script miniprojet.sh notamment en ce qui concere la couleur de fond.
+
+## j'ai utilisé aussi la classe de Bulma qui permet que la page s'affiche correctement sur tous les types d'écrans.
+
+## Aprés avoir fait des recherches et la documentation sur la librairie de Bulma j'ai découvert une autre "bootstrap" qui partage presque les memes fonctionalités, une question alors m'est venu à l'esprit: Pourquoi Bulma et non pas une autre ? et quelles sont les différences entre les deux ?  
